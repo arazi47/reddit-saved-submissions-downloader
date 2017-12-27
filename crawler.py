@@ -16,26 +16,19 @@ class Crawler:
 	def getSavedLinks(self):
 		result = praw.Reddit(client_id = self.cfg.getClientId(), client_secret = self.cfg.getClientSecret(), username = self.cfg.getUsername(), password = self.cfg.getPassword(), user_agent = self.cfg.getUserAgent())
 
-		# @TODO [WARNING - MUST READ]
 		# limit takes the number of posts to get
 		# not the number of saved posts
 		# add * 25 to get number of pages
-		# currently we have the number of POSTS TO READ HERE
-		savedLinks = result.user.me().saved(limit = self.cfg.getPagesToCrawl())
+		savedLinks = result.user.me().saved(limit = self.cfg.getPagesToCrawl() * 25)
 		savedLinks = list(savedLinks)
 
-		# debug
-		print(savedLinks)
-
 		return savedLinks
+
 
 	def getSavedSubmissions(self, savedLinks):
 		submissions = []
 
 		totalSubmissions = len(savedLinks)
-
-		# debug
-		print("Total submissions: " + str(totalSubmissions))
 
 		for submissionIndex, currSubmission in enumerate(savedLinks):
 			# Apparently the videos will also go in here
@@ -109,6 +102,9 @@ class Crawler:
 
 
 	def isDirectImgurUrl(self, url):
+		if len(url) == 0:
+			return False
+
 		if 'i.imgur' in url and '/a/' not in url:
 			return True
 
@@ -155,6 +151,7 @@ class Crawler:
 		# just for a better understanding :)
 		#self.downloadDirectImgurUrl('http://' + imageUrl[2:], savePath)
 
+		# I don't know if this is a hackfix or not, but it seems to do it's job
 		# Add the i. to get the direct download link from imgur
 		url = url[:8] + 'i.' + url[8:]
 		self.downloadDirectImgurUrl(url, savePath)

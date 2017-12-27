@@ -92,7 +92,7 @@ class Crawler:
 
 
 	# when it's imgur.com/something
-	# and not i.imgur/something.ext
+	# and not i.imgur/something.extension
 	# basically, when the link does not point directly to the image
 	def isIndirectImgurUrl(self, url):
 		if len(url) == 0:
@@ -141,6 +141,7 @@ class Crawler:
 		except IOError as error:
 			print('[ERROR] AT DOWNLOADING...')
 			print(error)
+
 
 	def downloadIndirectImgurUrl(self, sourceCode, url, savePath):
 		print('Trying indirect download ' + savePath)
@@ -200,3 +201,9 @@ class Crawler:
 			# @TODO
 			# does this even print something?
 			self.printPercentageComplete(currSubmissionIndex, len(submissions))
+
+	def deleteEmptyFolders(self):
+		files = os.listdir('downloads')
+		for file in files:
+			if not os.listdir('downloads\\' + file):
+				os.rmdir('downloads\\' + file)

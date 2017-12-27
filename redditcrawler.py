@@ -26,6 +26,7 @@ def main():
 	savedLinks = crawler.getSavedLinks()
 	submissions = crawler.getSavedSubmissions(savedLinks)
 	crawler.downloadSubmissions(submissions)
+	crawler.deleteEmptyFolders()
 
 
 	finishTime = datetime.now()

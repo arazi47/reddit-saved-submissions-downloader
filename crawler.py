@@ -19,7 +19,7 @@ class Crawler:
 		# limit takes the number of posts to get
 		# not the number of saved posts
 		# add * 25 to get number of pages
-		savedLinks = result.user.me().saved(limit = self.cfg.getPagesToCrawl() * 25)
+		savedLinks = result.user.me().saved(limit = self.cfg.getPagesToCrawl())
 		savedLinks = list(savedLinks)
 
 		return savedLinks
@@ -84,6 +84,17 @@ class Crawler:
 			return str(int(((float(currentItem + 1) / float(numItems)) * 100))) + '%'
 
 
+	# i.redd.it image links
+	def isRedditImageUrl(self, url):
+		if len(url) == 0:
+			return False
+
+		if 'i.redd.it' in url:
+			return True
+
+		return False
+
+
 	# when it's imgur.com/something
 	# and not i.imgur/something.extension
 	# basically, when the link does not point directly to the image
@@ -124,7 +135,7 @@ class Crawler:
 		return False
 
 
-	def downloadDirectImgurUrl(self, url, savePath):
+	def downloadDirectUrl(self, url, savePath):
 		# TODO solve this
 		# if we download an album, all files will have the same name
 		if (self.fileAlreadyExists(savePath)):
@@ -154,7 +165,7 @@ class Crawler:
 		# I don't know if this is a hackfix or not, but it seems to do it's job
 		# Add the i. to get the direct download link from imgur
 		url = url[:8] + 'i.' + url[8:]
-		self.downloadDirectImgurUrl(url, savePath)
+		self.downloadDirectUrl(url, savePath)
 
 
 	def downloadImgurAlbum(self, sourceCode, url, savePath):
@@ -163,12 +174,11 @@ class Crawler:
 
 		for image in soup.select('.post-image'):
 			imageUrl = image.a['href']
-			self.downloadDirectImgurUrl('http://' + imageUrl[2:], savePath)
+			self.downloadDirectUrl('http://' + imageUrl[2:], savePath)
 
 
 	def downloadSubmissions(self, submissions):
 		for currSubmissionIndex, submission in enumerate(submissions):
-			# @todo make this load from a setting
 			# 3 => skip /r/
 			savePath = self.cfg.getSavePath() + submission.subreddit[3:]
 
@@ -177,8 +187,8 @@ class Crawler:
 			if self.directoryNonExistant(savePath):
 				self.makeDir(savePath)
 
-			if self.isDirectImgurUrl(url):
-				self.downloadDirectImgurUrl(url, savePath + submission.title + '.' + submission.extension)
+			if self.isDirectImgurUrl(url) or self.isRedditImageUrl(url):
+				self.downloadDirectUrl(url, savePath + submission.title + '.' + submission.extension)
 			# join these 2 elifs together, why would we need two if they almost do the same thing?
 			elif self.isIndirectImgurUrl(url):
 				request = urllib.request.Request(url)

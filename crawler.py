@@ -38,6 +38,7 @@ class Crawler:
 		print("Total submissions: " + str(totalSubmissions))
 
 		for submissionIndex, currSubmission in enumerate(savedLinks):
+			# Apparently the videos will also go in here
 			if type(currSubmission) is praw.models.Submission:
 				newSubmission = Submission()
 
@@ -46,8 +47,15 @@ class Crawler:
 
 				newSubmission.title = currSubmission.title
 				newSubmission.subredditTitle = currSubmission.subreddit.title
+
+
+				# i.imgur.com/something.jpg
 				newSubmission.bodyUrl = currSubmission.url
+
+				# this is reddit's post url
 				newSubmission.postUrl = currSubmission.permalink
+
+				newSubmission.extension = newSubmission.getExtension()
 
 				submissions.append(newSubmission)
 
@@ -121,6 +129,8 @@ class Crawler:
 
 
 	def downloadDirectImgurUrl(self, url, savePath):
+		# TODO solve this
+		# if we download an album, all files will have the same name
 		if (self.fileAlreadyExists(savePath)):
 			print('[WARNING] File ' + savePath[savePath.rfind('/') + 1:] + ' has already been downloaded, skipping.')
 			return
@@ -136,19 +146,23 @@ class Crawler:
 		print('Trying indirect download ' + savePath)
 		# get the direct imgur url from the page that contains a single image
 		#print(url)
-		soup = BeautifulSoup(sourceCode, 'lxml')
-		imageUrl = soup.select('.post-image')[0].a['href']
+		#soup = BeautifulSoup(sourceCode, 'lxml')
+		#imageUrl = soup.select('.post-image')[0].a['href']
 
 		# 2: because the link starts with //
 		# we could just write 'http:' + imageUrl, but I did it this way
 		# just for a better understanding :)
-		self.downloadDirectImgurUrl('http://' + imageUrl[2:], savePath)
+		#self.downloadDirectImgurUrl('http://' + imageUrl[2:], savePath)
+
+		# Add the i. to get the direct download link from imgur
+		url = url[:8] + 'i.' + url[8:]
+		self.downloadDirectImgurUrl(url, savePath)
 
 
 	def downloadImgurAlbum(self, sourceCode, url, savePath):
 		print('Downloading album')
 		soup = BeautifulSoup(sourceCode, 'lxml')
-		
+
 		for image in soup.select('.post-image'):
 			imageUrl = image.a['href']
 			self.downloadDirectImgurUrl('http://' + imageUrl[2:], savePath)
@@ -166,21 +180,21 @@ class Crawler:
 				self.makeDir(savePath)
 
 			if self.isDirectImgurUrl(url):
-				self.downloadDirectImgurUrl(url, savePath + submission.title)
+				self.downloadDirectImgurUrl(url, savePath + submission.title + '.' + submission.extension)
 			# join these 2 elifs together, why would we need two if they almost do the same thing?
 			elif self.isIndirectImgurUrl(url):
 				request = urllib.request.Request(url)
 				page = urllib.request.urlopen(request)
 				sourceCode = page.read()
-				self.downloadIndirectImgurUrl(sourceCode, url, savePath + submission.title)
+				self.downloadIndirectImgurUrl(sourceCode, url, savePath + submission.title + '.' + submission.extension)
 			elif self.isImgurAlbum(url):
 				request = urllib.request.Request(url)
 				page = urllib.request.urlopen(request)
 				sourceCode = page.read()
-				self.downloadImgurAlbum(sourceCode, url, savePath + submission.title)
+				self.downloadImgurAlbum(sourceCode, url, savePath + submission.title + '.' + submission.extension)
 			else:
 				# @TODO
-				# gifv, imgur albums, gfycat
+				# gifv, gfycat
 				print('[ERROR] Not direct && not indirect && not album!')
 
 			# @TODO

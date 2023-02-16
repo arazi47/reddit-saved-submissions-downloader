@@ -25,8 +25,6 @@ You can use this app to download your imgur/i.redd.it image links (gifs too!) to
 
    4.5 pagesToCrawl: how many saved pages on Reddit you'd like the app to crawl and download the submissions from
 
-   4.6 savePath: full path to where the subreddit folders will be created and the submissions will be downloaded to (ex: "C:\Downloads\")
-
 ## Notes
 1. You need to have Python 3 installed in order for the app to run. 
 2. Make sure you have installed (preferably using pip) the following modules: `praw`, `bs4`

@@ -56,13 +56,6 @@ class Crawler:
 
 		return submissions
 
-
-	def directory_non_existant(self, path):
-		if not os.path.exists(path):
-			return True
-
-		return False
-
 	# This is needed for checking if an image exists or not
 	def get_file_extension_from_url(self, url):
 		return url[url.find('.') + 1:]
@@ -176,8 +169,8 @@ class Crawler:
 		for curr_submission_index, submission in enumerate(submissions):
 			save_path = os.getcwd() + "\\" + DEFAULT_DOWNLOAD_FOLDER + "\\" + submission.subreddit + "\\"
 			url = submission.url
-
-			if self.directory_non_existant(save_path):
+		
+			if not os.path.exists(save_path):
 				os.makedirs(save_path)
 
 			save_path = save_path + submission.title + '.' + submission.extension

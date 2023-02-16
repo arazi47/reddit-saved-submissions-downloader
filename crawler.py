@@ -15,6 +15,13 @@ class Crawler:
 		self.cfg = cfg
 
 
+	def make_filename_valid(self, file_name):
+		invalid_filename_characters = "/\:*?\"<>|"
+		for char in invalid_filename_characters:
+			file_name = file_name.replace(char, "")
+		
+		return file_name
+
 	def get_saved_links(self):
 		result = praw.Reddit(client_id = self.cfg.get_client_id(), client_secret = self.cfg.get_client_secret(), username = self.cfg.get_username(), password = self.cfg.get_password(), user_agent = self.cfg.get_user_agent())
 
@@ -35,7 +42,8 @@ class Crawler:
 				new_submission = Submission()
 				# /r/abc/
 				new_submission.subreddit = curr_submission.subreddit.url.split("/")[2]
-				new_submission.title = curr_submission.title
+				new_submission.title = self.make_filename_valid(curr_submission.title)
+
 				# i.imgur.com/something.jpg
 				new_submission.url = curr_submission.url
 				new_submission.extension = curr_submission.url[curr_submission.url.rfind('.') + 1:]
@@ -171,16 +179,17 @@ class Crawler:
 			if self.directory_non_existant(save_path):
 				os.makedirs(save_path)
 
+			save_path = save_path + submission.title + '.' + submission.extension
 			if self.is_direct_imgur_url(url) or self.is_reddit_image_url(url):
-				self.download_direct_url(url, save_path + submission.title + '.' + submission.extension)
+				self.download_direct_url(url, save_path)
 			elif self.is_indirect_imgur_url(url) or self.is_imgur_album(url):
 				request = urllib.request.Request(url)
 				page = urllib.request.urlopen(request)
 				source_code = page.read()
 				if self.is_indirect_imgur_url(url):
-					self.download_indirect_imgur_url(source_code, url, save_path + submission.title + '.' + submission.extension)
+					self.download_indirect_imgur_url(source_code, url, save_path)
 				else:
-					self.download_imgur_album(source_code, url, save_path + submission.title + '.' + submission.extension)
+					self.download_imgur_album(source_code, url, save_path)
 			else:
 				# @TODO
 				# gifv, gfycat

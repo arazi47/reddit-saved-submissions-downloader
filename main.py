@@ -18,8 +18,6 @@ def main():
 	# requests only accepts if the string starts with http:// (no www required though)
 
 	config_reader = ConfigReader()
-	config_reader.read_configuration()
-
 	startTime = datetime.now()
 
 	crawler = Crawler(config_reader)

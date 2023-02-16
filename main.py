@@ -17,17 +17,16 @@ from datetime import datetime
 def main():
 	# requests only accepts if the string starts with http:// (no www required though)
 
-	cfgReader = ConfigReader()
-	cfgReader.readConfiguration()
+	config_reader = ConfigReader()
+	config_reader.read_configuration()
 
 	startTime = datetime.now()
 
-	crawler = Crawler(cfgReader)
-	savedLinks = crawler.getSavedLinks()
-	submissions = crawler.getSavedSubmissions(savedLinks)
-	crawler.downloadSubmissions(submissions)
-	crawler.deleteEmptyFolders()
-
+	crawler = Crawler(config_reader)
+	savedLinks = crawler.get_saved_links()
+	submissions = crawler.get_saved_submissions(savedLinks)
+	crawler.download_submissions(submissions)
+	crawler.delete_empty_folders()
 
 	finishTime = datetime.now()
 

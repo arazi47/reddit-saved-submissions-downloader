@@ -8,19 +8,15 @@
 
 from crawler import *
 
-from configreader import *
-
 # for calculating how long it took the crawler to finish its job
 from datetime import datetime
 
 
 def main():
 	# requests only accepts if the string starts with http:// (no www required though)
-
-	config_reader = ConfigReader()
 	startTime = datetime.now()
 
-	crawler = Crawler(config_reader)
+	crawler = Crawler()
 	savedLinks = crawler.get_saved_links()
 	submissions = crawler.get_saved_submissions(savedLinks)
 	crawler.download_submissions(submissions)

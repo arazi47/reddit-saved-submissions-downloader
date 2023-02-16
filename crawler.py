@@ -1,3 +1,4 @@
+from configreader import *
 from submission import *
 
 import praw
@@ -11,8 +12,8 @@ MAX_SUBMISSIONS_PER_PAGE = 25
 DEFAULT_DOWNLOAD_FOLDER = "Downloads"
 
 class Crawler:
-	def __init__(self, cfg):
-		self.cfg = cfg
+	def __init__(self):
+		self.__config_reader = ConfigReader()
 
 
 	def make_filename_valid(self, file_name):
@@ -24,9 +25,9 @@ class Crawler:
 
 
 	def get_saved_links(self):
-		result = praw.Reddit(client_id = self.cfg.get_client_id(), client_secret = self.cfg.get_client_secret(), username = self.cfg.get_username(), password = self.cfg.get_password(), user_agent = self.cfg.get_user_agent())
+		result = praw.Reddit(client_id = self.__config_reader.get_client_id(), client_secret = self.__config_reader.get_client_secret(), username = self.__config_reader.get_username(), password = self.__config_reader.get_password(), user_agent = self.__config_reader.get_user_agent())
 
-		saved_links = result.user.me().saved(limit = self.cfg.get_pages_to_crawl() * MAX_SUBMISSIONS_PER_PAGE)
+		saved_links = result.user.me().saved(limit = self.__config_reader.get_pages_to_crawl() * MAX_SUBMISSIONS_PER_PAGE)
 		saved_links = list(saved_links)
 
 		return saved_links

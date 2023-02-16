@@ -178,7 +178,7 @@ class Crawler:
 	def downloadSubmissions(self, submissions):
 		for currSubmissionIndex, submission in enumerate(submissions):
 			# 3 => skip /r/
-			savePath = self.cfg.getSavePath() + submission.subreddit[3:]
+			savePath = os.getcwd() + "\\Downloads\\" + submission.subreddit[3:]
 
 			url = submission.bodyUrl
 

@@ -10,7 +10,6 @@ class ConfigReader:
 		self.password = ''
 		self.userAgent = ''
 		self.pagesToCrawl = DEFAULT_PAGES_TO_CRAWL
-		self.savePath = ''
 
 
 	def setPagesToCrawl(self, pagesToCrawl):
@@ -32,36 +31,23 @@ class ConfigReader:
 		Given the setting name from the file, we determine which one it is and set it in the program
 		'''
 
-		# debug
-		#print("got setting: " + setting)
-
 		if 'clientId' in setting:
-			#print("SETTING CLIENT ID TO " + setting[setting.find('=') + 1:].lstrip())
 			self.clientId = setting[setting.find('=') + 1:].lstrip()
 			self.clientId = self.clientId[:-1]
 		elif 'clientSecret' in setting:
-			#print("SETTING SECRET TO " + setting)
 			self.clientSecret = setting[setting.find('=') + 1:].lstrip()
 			self.clientSecret = self.clientSecret[:-1]
 		elif 'username' in setting:
-			#print("SETTING USERNAME TO " + setting)
 			self.username = setting[setting.find('=') + 1:].lstrip()
 			self.username = self.username[:-1]
 		elif 'password' in setting:
-			#print("SETTING PASSWORD TO " + setting)
 			self.password = setting[setting.find('=') + 1:].lstrip()
 			self.password = self.password[:-1]
 		elif 'userAgent' in setting:
-			#print("SETTING USER AGENT TO " + setting)
 			self.userAgent = setting[setting.find('=') + 1:].lstrip()
 			self.userAgent = self.userAgent[:-1]
 		elif 'pagesToCrawl' in setting:
-			#print("SETTING PAGES TO CRAWL TO " + setting[setting.find('=') + 1:].lstrip())
 			self.setPagesToCrawl(setting[setting.find('=') + 1:].lstrip())
-		elif 'savePath' in setting:
-			#print("SETTING SAVEPATH TO " + setting)
-			self.savePath = setting[setting.find('=') + 1:].lstrip()
-			self.savePath = self.savePath[:-1]
 
 
 	def readConfiguration(self):
@@ -108,7 +94,3 @@ class ConfigReader:
 
 	def getPagesToCrawl(self):
 		return self.pagesToCrawl
-
-
-	def getSavePath(self):
-		return self.savePath

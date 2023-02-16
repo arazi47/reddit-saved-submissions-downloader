@@ -2,18 +2,13 @@
 @TODO:
 	- add support for imgur's gifv files, gfycat, indirect file types (not i.imgur, for example)
 	- webm (maybe?), imgur albums
-
-	- read settings (user, pass and the rest) from a settings file
 '''
 
 from crawler import *
-
-# for calculating how long it took the crawler to finish its job
 from datetime import datetime
 
 
 def main():
-	# requests only accepts if the string starts with http:// (no www required though)
 	start_time = datetime.now()
 
 	crawler = Crawler()

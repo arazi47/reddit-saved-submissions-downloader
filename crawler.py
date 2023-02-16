@@ -54,11 +54,6 @@ class Crawler:
 
 		return False
 
-
-	def make_dir(self, path):
-		os.makedirs(path)
-
-
 	# This is needed for checking if an image exists or not
 	def get_file_extension_from_url(self, url):
 		return url[url.find('.') + 1:]
@@ -174,7 +169,7 @@ class Crawler:
 			url = submission.url
 
 			if self.directory_non_existant(save_path):
-				self.make_dir(save_path)
+				os.makedirs(save_path)
 
 			if self.is_direct_imgur_url(url) or self.is_reddit_image_url(url):
 				self.download_direct_url(url, save_path + submission.title + '.' + submission.extension)

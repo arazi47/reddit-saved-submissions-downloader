@@ -173,17 +173,14 @@ class Crawler:
 
 			if self.is_direct_imgur_url(url) or self.is_reddit_image_url(url):
 				self.download_direct_url(url, save_path + submission.title + '.' + submission.extension)
-			# join these 2 elifs together, why would we need two if they almost do the same thing?
-			elif self.is_indirect_imgur_url(url):
+			elif self.is_indirect_imgur_url(url) or self.is_imgur_album(url):
 				request = urllib.request.Request(url)
 				page = urllib.request.urlopen(request)
-				sourceCode = page.read()
-				self.download_indirect_imgur_url(sourceCode, url, save_path + submission.title + '.' + submission.extension)
-			elif self.is_imgur_album(url):
-				request = urllib.request.Request(url)
-				page = urllib.request.urlopen(request)
-				sourceCode = page.read()
-				self.download_imgur_album(sourceCode, url, save_path + submission.title + '.' + submission.extension)
+				source_code = page.read()
+				if self.is_indirect_imgur_url(url):
+					self.download_indirect_imgur_url(source_code, url, save_path + submission.title + '.' + submission.extension)
+				else:
+					self.download_imgur_album(source_code, url, save_path + submission.title + '.' + submission.extension)
 			else:
 				# @TODO
 				# gifv, gfycat

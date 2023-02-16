@@ -7,6 +7,7 @@ import os
 
 from bs4 import BeautifulSoup
 
+MAX_SUBMISSIONS_PER_PAGE = 25
 
 class Crawler:
 	def __init__(self, cfg):
@@ -16,10 +17,7 @@ class Crawler:
 	def getSavedLinks(self):
 		result = praw.Reddit(client_id = self.cfg.getClientId(), client_secret = self.cfg.getClientSecret(), username = self.cfg.getUsername(), password = self.cfg.getPassword(), user_agent = self.cfg.getUserAgent())
 
-		# limit takes the number of posts to get
-		# not the number of saved posts
-		# add * 25 to get number of pages
-		savedLinks = result.user.me().saved(limit = self.cfg.getPagesToCrawl())
+		savedLinks = result.user.me().saved(limit = self.cfg.getPagesToCrawl() * MAX_SUBMISSIONS_PER_PAGE)
 		savedLinks = list(savedLinks)
 
 		return savedLinks

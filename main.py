@@ -14,17 +14,16 @@ from datetime import datetime
 
 def main():
 	# requests only accepts if the string starts with http:// (no www required though)
-	startTime = datetime.now()
+	start_time = datetime.now()
 
 	crawler = Crawler()
-	savedLinks = crawler.get_saved_links()
-	submissions = crawler.get_saved_submissions(savedLinks)
+	saved_links = crawler.get_saved_links()
+	submissions = crawler.get_saved_submissions(saved_links)
 	crawler.download_submissions(submissions)
 	crawler.delete_empty_folders()
 
-	finishTime = datetime.now()
-
-	print('Done! Operation completed in ' + str(int((finishTime - startTime).total_seconds())) + ' seconds.')
+	finish_time = datetime.now()
+	print('Done! Operation completed in ' + str(int((finish_time - start_time).total_seconds())) + ' seconds.')
 
 if __name__ == '__main__':
 	main()

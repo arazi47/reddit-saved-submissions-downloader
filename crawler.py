@@ -33,12 +33,12 @@ class Crawler:
 		return saved_links
 
 
-	def get_saved_submissions(self, savedLinks):
+	def get_saved_submissions(self, saved_links):
 		submissions = []
 
-		total_submissions = len(savedLinks)
+		total_submissions = len(saved_links)
 
-		for submission_index, curr_submission in enumerate(savedLinks):
+		for submission_index, curr_submission in enumerate(saved_links):
 			# Apparently the videos will also go in here
 			if type(curr_submission) is praw.models.Submission:
 				new_submission = Submission()

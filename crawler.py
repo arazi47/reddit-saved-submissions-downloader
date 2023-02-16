@@ -22,6 +22,7 @@ class Crawler:
 		
 		return file_name
 
+
 	def get_saved_links(self):
 		result = praw.Reddit(client_id = self.cfg.get_client_id(), client_secret = self.cfg.get_client_secret(), username = self.cfg.get_username(), password = self.cfg.get_password(), user_agent = self.cfg.get_user_agent())
 

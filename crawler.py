@@ -189,9 +189,7 @@ class Crawler:
 				# gifv, gfycat
 				print('[ERROR] Not direct && not indirect && not album!')
 
-			# @TODO
-			# does this even print something?
-			self.get_percentage_complete(curr_submission_index, len(submissions))
+			print(self.get_percentage_complete(curr_submission_index, len(submissions)))
 
 	def delete_empty_folders(self):
 		files = os.listdir(DEFAULT_DOWNLOAD_FOLDER)

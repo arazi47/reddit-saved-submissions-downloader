@@ -8,6 +8,7 @@ import os
 from bs4 import BeautifulSoup
 
 MAX_SUBMISSIONS_PER_PAGE = 25
+DEFAULT_DOWNLOAD_FOLDER = "Downloads"
 
 class Crawler:
 	def __init__(self, cfg):
@@ -32,22 +33,12 @@ class Crawler:
 			# Apparently the videos will also go in here
 			if type(curr_submission) is praw.models.Submission:
 				new_submission = Submission()
-
-				# /r/abc
-				new_submission.subreddit = curr_submission.subreddit.url
-
+				# /r/abc/
+				new_submission.subreddit = curr_submission.subreddit.url.split("/")[2]
 				new_submission.title = curr_submission.title
-				new_submission.subreddit_title = curr_submission.subreddit.title
-
-
 				# i.imgur.com/something.jpg
-				new_submission.bodyUrl = curr_submission.url
-
-				# this is reddit's post url
-				new_submission.postUrl = curr_submission.permalink
-
-				new_submission.extension = new_submission.get_extension()
-
+				new_submission.url = curr_submission.url
+				new_submission.extension = curr_submission.url[curr_submission.url.rfind('.') + 1:]
 				submissions.append(new_submission)
 
 				print(self.get_percentage_complete(submission_index, total_submissions))
@@ -141,11 +132,13 @@ class Crawler:
 			return
 
 		try:
-			print('Trying direct download')
+			print("================================================")
+			print('Trying direct download: ', url)
 			urllib.request.urlretrieve(url, savePath)
 		except IOError as error:
 			print('[ERROR] AT DOWNLOADING...')
 			print(error)
+		print("================================================")
 
 
 	def download_indirect_imgur_url(self, sourceCode, url, savePath):
@@ -177,10 +170,8 @@ class Crawler:
 
 	def download_submissions(self, submissions):
 		for curr_submission_index, submission in enumerate(submissions):
-			# 3 => skip /r/
-			save_path = os.getcwd() + "\\Downloads\\" + submission.subreddit[3:]
-
-			url = submission.bodyUrl
+			save_path = os.getcwd() + "\\" + DEFAULT_DOWNLOAD_FOLDER + "\\" + submission.subreddit + "\\"
+			url = submission.url
 
 			if self.directory_non_existant(save_path):
 				self.make_dir(save_path)
@@ -208,7 +199,7 @@ class Crawler:
 			self.get_percentage_complete(curr_submission_index, len(submissions))
 
 	def delete_empty_folders(self):
-		files = os.listdir('downloads')
+		files = os.listdir(DEFAULT_DOWNLOAD_FOLDER)
 		for file in files:
-			if not os.listdir('downloads\\' + file):
-				os.rmdir('downloads\\' + file)
+			if not os.listdir(DEFAULT_DOWNLOAD_FOLDER + "\\" + file):
+				os.rmdir(DEFAULT_DOWNLOAD_FOLDER + "\\" + file)

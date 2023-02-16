@@ -124,25 +124,25 @@ class Crawler:
 		return False
 
 
-	def download_direct_url(self, url, savePath):
+	def download_direct_url(self, url, save_path):
 		# TODO solve this
 		# if we download an album, all files will have the same name
-		if (self.file_exists(savePath)):
-			print('[WARNING] File ' + savePath[savePath.rfind('/') + 1:] + ' has already been downloaded, skipping.')
+		if (self.file_exists(save_path)):
+			print('[WARNING] File ' + save_path[save_path.rfind('/') + 1:] + ' has already been downloaded, skipping.')
 			return
 
 		try:
 			print("================================================")
 			print('Trying direct download: ', url)
-			urllib.request.urlretrieve(url, savePath)
+			urllib.request.urlretrieve(url, save_path)
 		except IOError as error:
 			print('[ERROR] AT DOWNLOADING...')
 			print(error)
 		print("================================================")
 
 
-	def download_indirect_imgur_url(self, sourceCode, url, savePath):
-		print('Trying indirect download ' + savePath)
+	def download_indirect_imgur_url(self, sourceCode, url, save_path):
+		print('Trying indirect download ' + save_path)
 		# get the direct imgur url from the page that contains a single image
 		#print(url)
 		#soup = BeautifulSoup(sourceCode, 'lxml')
@@ -156,16 +156,16 @@ class Crawler:
 		# I don't know if this is a hackfix or not, but it seems to do it's job
 		# Add the i. to get the direct download link from imgur
 		url = url[:8] + 'i.' + url[8:]
-		self.download_direct_url(url, savePath)
+		self.download_direct_url(url, save_path)
 
 
-	def download_imgur_album(self, sourceCode, url, savePath):
+	def download_imgur_album(self, source_code, url, save_path):
 		print('Downloading album')
-		soup = BeautifulSoup(sourceCode, 'lxml')
+		soup = BeautifulSoup(source_code, 'lxml')
 
 		for image in soup.select('.post-image'):
 			imageUrl = image.a['href']
-			self.download_direct_url('http://' + imageUrl[2:], savePath)
+			self.download_direct_url('http://' + imageUrl[2:], save_path)
 
 
 	def download_submissions(self, submissions):

@@ -10,7 +10,7 @@ class ConfigReader:
 		config.read('config.ini')
 		self.__client_id = config.get('application', 'client_id')
 		self.__client_secret = config.get('application', 'client_secret')
-		self.__user_agent = config.get('application', 'user_agent')
+		self.__user_agent = "Reddit Saved Submissions Downloader - https://github.com/arazi47/reddit-saved-submissions-downloader"
 		self.__username = config.get('reddit', 'username')
 		self.__password = config.get('reddit', 'password')
 		self.__pages_to_crawl = config.getint('settings', 'pages_to_crawl')

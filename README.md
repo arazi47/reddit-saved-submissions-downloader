@@ -1,4 +1,4 @@
-# Reddit Saved Content Downloader
+# Reddit Saved Submissions Downloader
 
 You can use this app to download your imgur/i.redd.it image links (gifs too!) to your hard drive, sorted by subreddit.
 
@@ -15,15 +15,15 @@ You can use this app to download your imgur/i.redd.it image links (gifs too!) to
 
 4. Open `config.ini` and complete the variables as follows:
 
-   4.1 clientId: copy the text under `personal use script`
+   4.1 `client_id`: copy the text under `personal use script`
 
-   4.2 clientSecret: copy the text to the right of `secret`
+   4.2 `client_secret`: copy the text to the right of `secret`
 
-   4.3 Fill in your Reddit username & password
+   4.3 `username`: your Reddit username
 
-   4.4 userAgent: leave it like that
+   4.4 `password`: your Reddit password
 
-   4.5 pagesToCrawl: how many saved pages on Reddit you'd like the app to crawl and download the submissions from
+   4.5 `pages_to_crawl`: how many saved pages on Reddit you'd like the app to crawl and download the submissions from
 
 ## Notes
 1. You need to have Python 3 installed in order for the app to run. 

@@ -16,7 +16,7 @@ class Crawler:
 		self.__config_reader = ConfigReader()
 
 
-	def make_filename_valid(self, file_name):
+	def remove_invalid_file_name_symbols(self, file_name):
 		invalid_filename_characters = "/\:*?\"<>|"
 		for char in invalid_filename_characters:
 			file_name = file_name.replace(char, "")
@@ -44,7 +44,7 @@ class Crawler:
 				new_submission = Submission()
 				# /r/abc/
 				new_submission.subreddit = curr_submission.subreddit.url.split("/")[2]
-				new_submission.title = self.make_filename_valid(curr_submission.title)
+				new_submission.title = self.remove_invalid_file_name_symbols(curr_submission.title)
 
 				# i.imgur.com/something.jpg
 				new_submission.url = curr_submission.url

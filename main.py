@@ -1,9 +1,3 @@
-'''
-@TODO:
-	- add support for imgur's gifv files, gfycat, indirect file types (not i.imgur, for example)
-	- webm (maybe?), imgur albums
-'''
-
 from crawler import *
 from datetime import datetime
 

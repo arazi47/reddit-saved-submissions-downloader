@@ -123,8 +123,7 @@ class Crawler:
 
 
 	def download_direct_url(self, url, save_path):
-		# TODO solve this
-		# if we download an album, all files will have the same name
+		# TODO fix if we download an album, all files will have the same name
 		if (self.file_exists(save_path)):
 			print('[WARNING] File ' + save_path[save_path.rfind('/') + 1:] + ' has already been downloaded, skipping.')
 			return
@@ -186,8 +185,6 @@ class Crawler:
 				else:
 					self.download_imgur_album(source_code, url, save_path)
 			else:
-				# @TODO
-				# gifv, gfycat
 				print('[ERROR] Not direct && not indirect && not album!')
 
 			print(self.get_percentage_complete(curr_submission_index, len(submissions)))

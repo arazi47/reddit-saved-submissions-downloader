@@ -116,21 +116,20 @@ class Crawler:
 		if 'i.imgur' in url:
 			return False
 
-		if 'imgur' in url and '/a/' in url:
+		if 'imgur' in url and ('/a/' in url or '/gallery/' in url):
 			return True
 
 		return False
 
 
 	def download_direct_url(self, url, save_path):
-		# TODO fix if we download an album, all files will have the same name
 		if (self.file_exists(save_path)):
-			print('[WARNING] File ' + save_path[save_path.rfind('/') + 1:] + ' has already been downloaded, skipping.')
+			print('[WARNING] File ' + save_path + ' has already been downloaded, skipping.')
 			return
 
 		try:
 			print("================================================")
-			print('Trying direct download: ', url)
+			print('Trying direct download: ', url, save_path)
 			urllib.request.urlretrieve(url, save_path)
 		except IOError as error:
 			print('[ERROR] AT DOWNLOADING...')
@@ -156,13 +155,22 @@ class Crawler:
 		self.download_direct_url(url, save_path)
 
 
-	def download_imgur_album(self, source_code, url, save_path):
+	def download_imgur_album(self, source_code, save_path):
 		print('Downloading album')
-		soup = BeautifulSoup(source_code, 'lxml')
+		soup = BeautifulSoup(source_code, 'html.parser')
+		source_code = str(soup)
+		what_to_search_for = '\\"basename\\":\\"\\",\\"url\\":\\"'
 
-		for image in soup.select('.post-image'):
-			imageUrl = image.a['href']
-			self.download_direct_url('http://' + imageUrl[2:], save_path)
+		found_at = source_code.find(what_to_search_for)
+		while found_at != -1:
+			beginning_of_image_url = found_at + len(what_to_search_for)
+			image_url = source_code[beginning_of_image_url:].split('\\"')[0]
+
+			file_name = image_url[image_url.rfind('/') + 1:]
+			self.download_direct_url(image_url, save_path + file_name)
+
+			source_code = source_code[beginning_of_image_url + len(image_url):]
+			found_at = source_code.find(what_to_search_for)
 
 
 	def download_submissions(self, submissions):
@@ -173,19 +181,21 @@ class Crawler:
 			if not os.path.exists(save_path):
 				os.makedirs(save_path)
 
-			save_path = save_path + submission.title + '.' + submission.extension
 			if self.is_direct_imgur_url(url) or self.is_reddit_image_url(url):
+				save_path = save_path + submission.title + '.' + submission.extension
 				self.download_direct_url(url, save_path)
 			elif self.is_indirect_imgur_url(url) or self.is_imgur_album(url):
 				request = urllib.request.Request(url)
 				page = urllib.request.urlopen(request)
 				source_code = page.read()
-				if self.is_indirect_imgur_url(url):
-					self.download_indirect_imgur_url(source_code, url, save_path)
+				if self.is_imgur_album(url):
+					self.download_imgur_album(source_code, save_path)
 				else:
-					self.download_imgur_album(source_code, url, save_path)
+					save_path = save_path + submission.title + '.' + submission.extension
+					self.download_indirect_imgur_url(source_code, url, save_path)
+
 			else:
-				print('[ERROR] Not direct && not indirect && not album!')
+				print('[ERROR] Not direct && not indirect && not album:', url, save_path)
 
 			print(self.get_percentage_complete(curr_submission_index, len(submissions)))
 
